@@ -7,8 +7,10 @@ package com.oracle.lliyu;
  |           Created by lliyu on 2/26/2015  (lin.yu@oracle.com)              |
  +===========================================================================*/
 
+import com.oracle.lliyu.utils.PdfConverter;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.net.*;
@@ -48,44 +50,62 @@ public class SafariBookParser
             isFirstPage = false;
 
             System.out.println("parsing:" + url);
-            //StringBuffer html = getHtml(url);
-            //Document doc = Jsoup.parse(html.toString());
-            //Document doc = Jsoup.connect("http://www.baidu.com/").get();
+//            StringBuffer html = getHtml(url);
+//            Document doc = Jsoup.parse(html.toString());
+//            Document doc = Jsoup.connect("http://www.baidu.com/").get();
 
             Document doc = getHtmlPage(url);
-
-            String htmlNeedsToConvert = getHtmlInterested(doc);
 
             nextUrlRelativePath = getNextPageLink(doc);
             if(nextUrlRelativePath.equalsIgnoreCase("/"))
                 hasNextPage = false;
 
-            convertToPDF(htmlNeedsToConvert);
+            String htmlNeedsToConvert = getHtmlInterested(doc);
+            PdfConverter.convertToPDF(htmlNeedsToConvert);
 
         }
     }
 
-    private static void convertToPDF(String str)
-    {
-
-    }
 
     /*
     doc is the whole html we get
 
-    in this method , the 
+    in this method , we should synthesize the html that needs to be converted
      */
     private static String getHtmlInterested(Document doc)
     {
         String ret;
-        Elements contents = doc.getElementsByClass(bodyClassName);
+        Document doc_copy = doc.clone();
+
+        Elements contents = doc_copy.getElementsByClass(bodyClassName);
         System.out.println("html content size: " + contents.size());
         if(contents.size()==0)
         {
             System.out.println("can not find element with classname : " + bodyClassName);
             return "";
         }
-        ret = contents.first().html();
+
+        /*
+            delete all child node in body
+            move htmlcontent to here under body
+         */
+        Elements bodyEles = doc_copy.getElementsByTag("body");
+        if(contents.size()==0)
+        {
+            System.out.println("can not find element with tag : " + "body");
+            return "";
+        }
+        Element bodyEle = bodyEles.first();
+
+        while(bodyEle.childNodes().size()>0){
+            bodyEle.childNodes().get(0).remove();
+        }
+        bodyEle.appendChild(contents.first());
+
+        ret = doc_copy.html();
+
+        ret = ret.replaceAll("img src=\"","img src=\""+safariBookOnlineWebSite);
+
         return ret;
     }
 
