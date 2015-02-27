@@ -32,7 +32,10 @@ public class SafariBookParser
         }
 
         String url = args[0];
-        downloadBookStartFromUrl(url);
+
+        PdfConverter.convertToPDFwithUrlString(url);
+
+        //downloadBookStartFromUrl(url);
     }
 
     private static void downloadBookStartFromUrl(String url) throws Exception
