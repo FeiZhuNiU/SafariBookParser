@@ -33,8 +33,8 @@ public class SafariBookParser
 
         String url = args[0];
 
-        PdfConverter.convertToPDFwithUrlString(url);
-
+        //PdfConverter.convertToPDFwithUrlString(url);
+        PdfConverter.convertToPDFwithHtmlString(url);
         //downloadBookStartFromUrl(url);
     }
 
