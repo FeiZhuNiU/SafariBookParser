@@ -31,10 +31,10 @@ public class SafariBookParser
             return;
         }
 
-        String url = args[0];
-
-        //PdfConverter.convertToPDFwithUrlString(url);
-        PdfConverter.convertToPDFwithHtmlString(url);
+        //String url = args[0];
+        String url = "http://bbs.sjtu.edu.cn";
+        PdfConverter.convertToPDFwithUrl(url);
+        //PdfConverter.convertToPDFwithHtmlString(url);
         //downloadBookStartFromUrl(url);
     }
 
@@ -64,7 +64,8 @@ public class SafariBookParser
                 hasNextPage = false;
 
             String htmlNeedsToConvert = getHtmlInterested(doc);
-            PdfConverter.convertToPDF(htmlNeedsToConvert);
+            PdfConverter.convertToPDFwithHtmlString(htmlNeedsToConvert);
+            hasNextPage = false;
 
         }
     }
@@ -134,35 +135,9 @@ public class SafariBookParser
     {
         Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("cn-proxy.jp.oracle.com", 80));
         //get whole html page
-        Document doc = Jsoup.parse(new URL(url).openConnection(proxy).getInputStream(), "UTF-8", url);
+        Document doc = Jsoup.parse(new URL(url).openConnection().getInputStream(), "UTF-8", url);
         return doc;
     }
 
-//    private static StringBuffer getHtml(String url)
-//    {
-//        StringBuffer html = new StringBuffer();
-//        try
-//        {
-//
-//
-//            Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("cn-proxy.jp.oracle.com", 80));
-//            URLConnection conn = (new URL(url)).openConnection(proxy);//获得UrlConnection 连接对象
-//            InputStream is = conn.getInputStream();//获得输入流
-//            BufferedReader br = new BufferedReader(new InputStreamReader(is));//buffered表示缓冲类
-//
-//            String temp;
-//            while(null!=(temp = br.readLine())){
-//                System.out.println(temp);
-//                html.append(temp).append("\n");
-//            }
-//            br.close();
-//            is.close();
-//        }
-//        catch (IOException e)
-//        {
-//            e.printStackTrace();
-//        }
-//        return html;
-//    }
 }
 
